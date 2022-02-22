@@ -51,7 +51,7 @@ type TZCronJobSpec struct {
 	// - "Forbid": forbids concurrent runs, skipping next run if previous run hasn't finished yet;
 	// - "Replace": cancels currently running job and replaces it with a new one
 	// +optional
-	ConcurrencyPolicy ConcurrencyPolicy `json:"concurrencyPolicy,omitempty"`
+	ConcurrencyPolicy batchv1.ConcurrencyPolicy `json:"concurrencyPolicy,omitempty"`
 
 	// This flag tells the controller to suspend subsequent executions, it does
 	// not apply to already started executions.  Defaults to false.
@@ -86,7 +86,8 @@ type TZCronJobStatus struct {
 
 	// Information when was the last time the job was successfully scheduled.
 	// +optional
-	LastScheduleTime *metav1.Time `json:"lastScheduleTime,omitempty"`
+	LastSuccessfulTime *metav1.Time `json:"lastSuccessfulTime,omitempty"`
+	LastScheduleTime   *metav1.Time `json:"lastScheduleTime,omitempty"`
 }
 
 //+kubebuilder:object:root=true
@@ -113,18 +114,3 @@ type TZCronJobList struct {
 func init() {
 	SchemeBuilder.Register(&TZCronJob{}, &TZCronJobList{})
 }
-
-// +kubebuilder:validation:Enum=Allow;Forbid;Replace
-type ConcurrencyPolicy string
-
-const (
-	// AllowConcurrent allows CronJobs to run concurrently.
-	AllowConcurrent ConcurrencyPolicy = "Allow"
-
-	// ForbidConcurrent forbids concurrent runs, skipping next run if previous
-	// hasn't finished yet.
-	ForbidConcurrent ConcurrencyPolicy = "Forbid"
-
-	// ReplaceConcurrent cancels currently running job and replaces it with a new one.
-	ReplaceConcurrent ConcurrencyPolicy = "Replace"
-)

@@ -129,6 +129,10 @@ func (in *TZCronJobStatus) DeepCopyInto(out *TZCronJobStatus) {
 		*out = make([]v1.ObjectReference, len(*in))
 		copy(*out, *in)
 	}
+	if in.LastSuccessfulTime != nil {
+		in, out := &in.LastSuccessfulTime, &out.LastSuccessfulTime
+		*out = (*in).DeepCopy()
+	}
 	if in.LastScheduleTime != nil {
 		in, out := &in.LastScheduleTime, &out.LastScheduleTime
 		*out = (*in).DeepCopy()
